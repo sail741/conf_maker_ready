@@ -61,3 +61,7 @@ def main():
     model_obj.write_file()
 
 #main()
+
+from tools import tools
+for i in range(1000):
+    print(tools.index_to_str(i))
