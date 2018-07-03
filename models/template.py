@@ -2,11 +2,13 @@ from models.model import Model
 from tools.tools import greek, index_to_str
 
 
-class Schnakenberg(Model):
+# FILL HERE : 1/4 replace the name of the class and the description
+class Template(Model):
     """
-    The Schnakenberg model.
+    The Template model.
     """
 
+    # FILL HERE : 2/4 replace the equations with the good ones
     du = "[a + u²v - u].{0} + {1}u".format(greek["gamma"], greek["deltaU"])
     dv = "[b - u²v].{0} + d.{1}u".format(greek["gamma"], greek["deltaU"])
 
@@ -24,6 +26,7 @@ class Schnakenberg(Model):
         var_name : how the variable is written in the .conf file
         value : The value of the variable. Set to "" (empty string) by default.
         '''
+        # FILL HERE : 3/4 put the good attributes of your model (specifics variables that the user need to give)
         self.fixed_attributes = [
             {
                 "display": "a",
@@ -64,6 +67,7 @@ class Schnakenberg(Model):
             i = 0
             current_gamma = self.gamma_0
             while current_gamma < self.gamma_f:
+                # FILL HERE : 4/4 Change the display of your equation in the .conf file
                 file.write("delta_{0}_a = \"(a_spec + {0}_a*{0}_a*{0}_b - {0}_a) * G_{1} + laplacian_{0}_a;\"\n".format(index_to_str(i), i))
                 file.write("delta_{0}_b = \"(b_spec + {0}_a*{0}_a*{0}_b) * G_{1} + d_spec * laplacian_{0}_a;\"\n".format(index_to_str(i), i))
                 i += 1

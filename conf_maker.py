@@ -1,9 +1,20 @@
 #!/usr/bin/env python
 
 # import the models
+# If you want to add mode model, add the follow row and replace with your filename:
+# from models import name_of_your_file
+# FILL HERE
 from models import schnakenberg
 
 # Append the models to the proposed list
+# To add more model, duplicate the following row in the array
+# FILL HERE
+'''
+    {
+        "name": "The name of your model for display",
+        "class": name_of_your_file.NameOfYourClass
+    }
+'''
 array_model = [
     {
         "name": "Schnakenberg",
@@ -60,8 +71,5 @@ def main():
     # We write the output to the file
     model_obj.write_file()
 
-#main()
 
-from tools import tools
-for i in range(1000):
-    print(tools.index_to_str(i))
+main()
