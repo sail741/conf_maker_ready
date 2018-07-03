@@ -1,57 +1,87 @@
-from model import Model
+from models.model import Model
 from tools.tools import greek, index_to_str
 
 
 class Schnakenberg(Model):
+    """
+    The Schnakenberg model.
+    """
 
     du = "[a + u²v - u].{0} + {1}u".format(greek["gamma"], greek["deltaU"])
     dv = "[b - u²v].{0} + d.{1}u".format(greek["gamma"], greek["deltaU"])
 
-    def __init__(self, gamma_0=None, gamma_f=None, n=None, a_spec="", b_spec="", d_spec=""):
+    def __init__(self, gamma_0=None, gamma_f=None, n=None):
+        """
+        Initialise when we create a Schnakenberg model.
+        """
+
+        # We initialise gamma_0, gamma_f and n if the user entered something.
         Model.__init__(self, gamma_0, gamma_f, n)
 
+        '''
+        We define the fixed attribute (that won't change for all the equations of this model).
+        display : how we show it to the user to ask him to fill the value
+        var_name : how the variable is written in the .conf file
+        value : The value of the variable. Set to "" (empty string) by default.
+        '''
         self.fixed_attributes = [
             {
                 "display": "a",
                 "var_name": "a_spec",
-                "value": a_spec
+                "value": ""
             },
             {
                 "display": "b",
                 "var_name": "b_spec",
-                "value": b_spec
+                "value": ""
             },
             {
                 "display": "d",
                 "var_name": "d_spec",
-                "value": d_spec
+                "value": ""
             }
         ]
+
+        # We run the setup function to ask every attribute to the user.
         self.setup()
 
-    @staticmethod
-    def eq_to_string():
-        return "du/dt = {0}\ndv/dt = {1}".format(Schnakenberg.du, Schnakenberg.dv)
+    def write_file(self):
+        """
+        The function used to write the .conf file.
+        :return:
+        """
 
+        # We start by writing the header (common variables) and beads;
+        Model.write_header_file(self)
+        Model.write_bead_file(self)
 
-    def create_file(self):
-        Model.create_header_file(self)
+        # then we write specific data
         with open(self.output_file, "a") as file:
+            # We write the formulas. We start from gamma_0 to gamma_f adding "get_step" at each loop.
+            # For each loop, we add 2 equations : du and dv.
             file.write("formula = (\n")
 
             i = 0
-            for v in range(self.gamma_0, self.gamma_f, self.get_step()):
+            current_gamma = self.gamma_0
+            while current_gamma < self.gamma_f:
                 file.write("delta_{0}_a = \"(a_spec + {0}_a*{0}_a*{0}_b - {0}_a) * G_{1} + laplacian_{0}_a;\"\n".format(index_to_str(i), i))
                 file.write("delta_{0}_b = \"(b_spec + {0}_a*{0}_a*{0}_b) * G_{1} + d_spec * laplacian_{0}_a;\"\n".format(index_to_str(i), i))
                 i += 1
+                current_gamma += self.get_step()
 
             file.write(")\n")
+
+            # Then we write the init part : declaration of variable.
+            # in this part, we write fixed specific attributes
             file.write("init = (\n")
             for att in self.fixed_attributes:
                 file.write("float4 {0} = {1};\n".format(att["var_name"], att["value"]))
 
+            # in this part, we write all the gamma (from gamma_0 to gamma_f with "get_step" between each value)
             i = 0
-            for v in range(self.gamma_0, self.gamma_f, self.get_step()):
-                file.write("float4 G_{0} = {1};\n".format(i, v))
+            current_gamma = self.gamma_0
+            while current_gamma < self.gamma_f:
+                file.write("float4 G_{0} = {1:.2f};\n".format(i, current_gamma))
                 i += 1
+                current_gamma += self.get_step()
             file.write(")\n")

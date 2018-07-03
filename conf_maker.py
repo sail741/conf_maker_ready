@@ -1,55 +1,63 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
+# import the models
 from models import schnakenberg
-from model import Model
-from tools.tools import greek, index_to_str
 
+# Append the models to the proposed list
 array_model = [
     {
         "name": "Schnakenberg",
         "class": schnakenberg.Schnakenberg
-    },
-    {
-        "name": "Thomas",
-        "class": None
     }
 ]
 
 
 def model_selection():
+    """
+    Use to ask the user what kind of model he want to use.
+    :return: the python dict of the model define in "array_model"
+    """
 
+    # init variables
     res_ok = False
     model_choice = 0
+
+    # While the user didn't enter a valid answer
     while not res_ok:
+        # We display all the possibilities
         for i in range(len(array_model)):
             print(str(i) + " - " + array_model[i]["name"])
 
-        model_choice = int(float(input("Choose your mode : ")))
+        # We get the user choice
+        model_choice = int(float(input("Choose your model : ")))
 
+        # We check that the input of the user is valid
         res_ok = model_choice in range(len(array_model))
-        if not res_ok:
-            print("\nYou need to enter the number of the mode.")
 
+        # If not, we ask him to enter a valid data.
+        if not res_ok:
+            print("\nYou need to enter the number of the model.")
+
+    # We return the dict
     return array_model[model_choice]
 
 
 def main():
+    """
+    The main function that call the different steps.
+    :return: None
+    """
+
+    # We get the user model choice.
     selected_model = model_selection()
 
+    # We print equations to show the different variables to fill.
     print(selected_model["class"].eq_to_string())
 
-    a = selected_model["class"]()
-    a.create_file()
+    # We create an object from the model chosen
+    model_obj = selected_model["class"]()
 
+    # We write the output to the file
+    model_obj.write_file()
 
-def main_test():
-    model_choice = array_model[0]
-    gamma_0 = 0
-    gamma_f = 10
-    n = 5
-    a = model_choice["class"](gamma_0, gamma_f, n, "1", "2", "3")
-    a.create_file()
-
-
-main_test()
 #main()
