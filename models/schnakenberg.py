@@ -64,9 +64,9 @@ class Schnakenberg(Model):
             i = 0
             current_gamma = self.gamma_0
             while current_gamma < self.gamma_f:
-                file.write("delta_{0}_a = \"(a_spec + {0}_a*{0}_a*{0}_b - {0}_a) * G_{1} + laplacian_{0}_a;\"\n".format(index_to_str(i), i))
-                file.write("delta_{0}_b = \"(b_spec + {0}_a*{0}_a*{0}_b) * G_{1} + d_spec * laplacian_{0}_a;\"\n".format(index_to_str(i), i))
-                i += 1
+                file.write("delta_{0} = \"(a_spec + {0}*{0}*{1} - {0}) * G_{2} + laplacian_{0};\"\n".format(index_to_str(i), index_to_str(i+1), i))
+                file.write("delta_{1} = \"(b_spec + {0}*{0}*{1}) * G_{2} + d_spec * laplacian_{0};\"\n".format(index_to_str(i), index_to_str(i+1), i))
+                i += 2
                 current_gamma += self.get_step()
 
             file.write(")\n")
