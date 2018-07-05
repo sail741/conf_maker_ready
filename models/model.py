@@ -153,8 +153,10 @@ class Model:
         with open(self.output_file, "w") as file:
             file.write("nSpecies = 1\n")
             file.write("dimension = 1\n")
-            file.write("maxSteps = {0}\n".format(self.gamma_f))
-            file.write("interval = {0}\n".format(self.get_step()))
+            # file.write("maxSteps = {0}\n".format(self.gamma_f))
+            # file.write("interval = {0}\n".format(self.get_step()))
+            file.write("maxSteps = 150\n")
+            file.write("interval = 1\n")
             file.write("seed = 1\n")
             file.write("temperature = 313.13\n")
             file.write("scale = 5e-13\n")
